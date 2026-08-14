@@ -2,6 +2,10 @@
 import './App.css'
 import { Navbar } from './components/Navbar'
 import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+
+
+
 function App() {
   
 const [todo, setTodo] = useState("") //input text
@@ -16,14 +20,28 @@ const handleDelete = () =>{
 
 }
 
+
+
+
 const handleAdd = () =>{
-  setTodos([...todos, todo]);
+  setTodos([...todos, { id:uuidv4(), todo, isCompleted:false}]);
   setTodo("");
 }
 const handleChange = (e) =>{
   setTodo(e.target.value);
 }
 
+const handleCheckbox = (e) => {
+ let id = e.target.name;
+ let index=todos.findIndex(item=>{
+  return item.id==id;
+  
+ })
+let newTodos= [...todos];
+newTodos[index].isCompleted = !newTodos[index].isCompleted;
+setTodos(newTodos);
+
+}
 
 
   return (
@@ -42,15 +60,20 @@ const handleChange = (e) =>{
 
 
 <div className="todos">
-  {todos.map((item) => (
-    <div key={item} className="todo flex">
-      <div className='text'>{item}</div>
+  {todos.map(item =>{
+
+
+ 
+  return   <div key={item.id} className="todo flex w=1/4 my-4 justify-between">
+    <input onChange={handleCheckbox} type="checkbox" name={item.id} checked= {item.isCompleted}  id="" />
+      <div className={item.isCompleted?"line-through":""}>{item.todo}</div>
       <div className='buttons'>
         <button onClick={handleEdit} className='bg-violet-800 hover:bg-violet-950 text-sm font-bold text-white py-1 px-2 rounded-md p-2 mx-1'>edit</button>
         <button onClick={handleDelete} className='bg-violet-800 hover:bg-violet-950 text-sm font-bold text-white py-1 px-2 rounded-md p-2 mx-1'>Delete</button>
       </div>
     </div>
-  ))}
+     })}
+
 </div>
 
 
